@@ -10,6 +10,7 @@ data class SwimmingPool (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",
+    val url: String = "",
     val vemcount_key: String = "",
     val vemcount_stream_id: String = ""
 )
