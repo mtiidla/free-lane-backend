@@ -9,7 +9,7 @@ import java.io.IOException
 @Component
 class TeamBadePoolService(private val restClient: RestTemplate) {
 
-    fun getPoolPeopleCount(vemcountKey: String, vemcountId: Long): Int {
+    fun getPoolPeopleCount(vemcountKey: String, vemcountId: String): Int {
         val response = restClient.exchange(
             "https://l.vemcount.com/w/$vemcountKey/stream?data[]=$vemcountId",
             HttpMethod.GET,
