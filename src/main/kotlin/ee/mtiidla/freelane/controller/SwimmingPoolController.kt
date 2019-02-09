@@ -24,7 +24,7 @@ class SwimmingPoolController(
     @GetMapping("/pool/{key}/{id}")
     fun getPoolPeopleCount(
         @PathVariable("key") key: String,
-        @PathVariable("id") id: Long
+        @PathVariable("id") id: String
     ): Int {
         // TODO: marko 2019-02-03 remove from controller, move to scheduled task
         return poolService.getPoolPeopleCount(key, id)
