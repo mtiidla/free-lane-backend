@@ -23,10 +23,10 @@ class PoolPeopleCountTask(
         pools.forEach {
             val count = service.getPoolPeopleCount(it.vemcount_key, it.vemcount_stream_id)
             val peopleCount = SwimmingPoolPeopleCount(
-                pool_id = it.id,
+                poolId = it.id,
                 // TODO: marko 2019-02-09 figure out proper way to approach time zones
                 timestamp = OffsetDateTime.now(ZoneId.of("Europe/Copenhagen")).truncatedTo(ChronoUnit.SECONDS),
-                people_count = count
+                peopleCount = count
             )
             countRepository.save(peopleCount)
         }

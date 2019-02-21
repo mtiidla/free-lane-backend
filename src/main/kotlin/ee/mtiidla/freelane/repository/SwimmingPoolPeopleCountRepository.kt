@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SwimmingPoolPeopleCountRepository : JpaRepository<SwimmingPoolPeopleCount, Long>
+interface SwimmingPoolPeopleCountRepository : JpaRepository<SwimmingPoolPeopleCount, Long> {
+
+    fun findAllByPoolId(poolId: Long) : List<SwimmingPoolPeopleCount>
+}

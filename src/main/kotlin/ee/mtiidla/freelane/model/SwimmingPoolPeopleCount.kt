@@ -10,7 +10,7 @@ import javax.persistence.Id
 data class SwimmingPoolPeopleCount(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-    val pool_id: Long = 0,
+    val poolId: Long = 0,
     val timestamp: OffsetDateTime,
-    val people_count: Int = 0
+    val peopleCount: Int = 0
 )
