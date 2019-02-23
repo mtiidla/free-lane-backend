@@ -1,5 +1,6 @@
 package ee.mtiidla.freelane.model
 
+import java.time.LocalTime
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -16,6 +17,6 @@ data class SwimmingPoolOpeningHours(
     @Min(1, message = "Day of week starting from 1 as Mondady")
     @Max(7, message = "Last day of week is 7, Sunday")
     val dayOfWeek: Int = 0,
-    val open: String = "",
-    val closed: String = ""
+    val open: LocalTime = LocalTime.MIDNIGHT,
+    val closed: LocalTime = LocalTime.MIDNIGHT
 )

@@ -35,7 +35,13 @@ class SwimmingPoolController(
         return repository.findAll()
             .map { pool ->
                 val hours = openingHoursRepository.findAllByPoolId(pool.id)
-                    .map { OpeningHoursViewModel(it.dayOfWeek, it.open, it.closed) }
+                    .map {
+                        OpeningHoursViewModel(
+                            it.dayOfWeek,
+                            it.open.toString(),
+                            it.closed.toString()
+                        )
+                    }
                 val count = countRepository.findFirst1ByPoolIdOrderByTimestampDesc(pool.id)
                 SwimmingPoolViewModel(
                     pool.id,
@@ -53,19 +59,18 @@ class SwimmingPoolController(
         @RequestParam("start_date") start: String,
         @RequestParam("end_date") end: String
     ): List<CountViewModel> {
-        val openingHours = openingHoursRepository.findAllByPoolId(poolId)
         var startDate = LocalDate.parse(start)
         val endDate = LocalDate.parse(end)
+
+        val openingHours = openingHoursRepository.findAllByPoolId(poolId)
         val allCounts = mutableListOf<SwimmingPoolPeopleCount>()
 
         while (!startDate.isAfter(endDate)) {
             val dayOfWeek = startDate.dayOfWeek.value
             val openingHour = checkNotNull(openingHours.firstOrNull { it.dayOfWeek == dayOfWeek })
-            val open = LocalTime.parse(openingHour.open)
-            val closed = LocalTime.parse(openingHour.closed)
-            // TODO: marko 2019-02-23 convert start date time to pool timezone
-            val queryStart = startDate.atTime(open).toInstant(ZoneOffset.UTC)
-            val queryEnd = startDate.atTime(closed).toInstant(ZoneOffset.UTC)
+            // TODO: marko 2019-02-23 convert start date time to pool timezone?
+            val queryStart = startDate.atTime(openingHour.open).toInstant(ZoneOffset.UTC)
+            val queryEnd = startDate.atTime(openingHour.closed).toInstant(ZoneOffset.UTC)
 
             val counts =
                 countRepository.findAllByPoolIdAndTimestampBetween(poolId, queryStart, queryEnd)
@@ -99,11 +104,15 @@ class SwimmingPoolController(
             SwimmingPoolOpeningHours(
                 poolId = poolId,
                 dayOfWeek = day,
-                open = open,
-                closed = closed
+                open = LocalTime.parse(open),
+                closed = LocalTime.parse(closed)
             )
         )
-        return OpeningHoursViewModel(hours.dayOfWeek, hours.open, hours.closed)
+        return OpeningHoursViewModel(
+            hours.dayOfWeek,
+            hours.open.toString(),
+            hours.closed.toString()
+        )
     }
 
     @PostMapping("/pools")

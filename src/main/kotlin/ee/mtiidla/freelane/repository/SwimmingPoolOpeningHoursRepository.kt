@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SwimmingPoolOpeningHoursRepository : JpaRepository<SwimmingPoolOpeningHours, Long> {
 
+    // TODO: marko 2019-02-23 should maybe order by dayOfWeek 
     fun findAllByPoolId(poolId: Long) : List<SwimmingPoolOpeningHours>
 
 }
