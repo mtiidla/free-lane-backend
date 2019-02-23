@@ -16,7 +16,7 @@ class PoolPeopleCountTask(
     private val countRepository: SwimmingPoolPeopleCountRepository
 ) {
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = INTERVAL_MS)
     fun saveSwimmingPoolPeopleCount() {
         val pools = poolRepository.findAll()
         pools.forEach {
@@ -29,5 +29,9 @@ class PoolPeopleCountTask(
             )
             countRepository.save(peopleCount)
         }
+    }
+
+    companion object {
+        const val INTERVAL_MS = 15 * 60 * 1000L
     }
 }
