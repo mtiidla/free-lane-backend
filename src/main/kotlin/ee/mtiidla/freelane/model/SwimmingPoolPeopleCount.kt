@@ -1,6 +1,6 @@
 package ee.mtiidla.freelane.model
 
-import java.time.OffsetDateTime
+import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -10,7 +10,7 @@ import javax.persistence.Id
 data class SwimmingPoolPeopleCount(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-    val pool_id: Long = 0,
-    val timestamp: OffsetDateTime,
-    val people_count: Int = 0
+    val poolId: Long = 0,
+    val timestamp: Instant = Instant.EPOCH,
+    val peopleCount: Int = 0
 )

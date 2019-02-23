@@ -6,8 +6,7 @@ import ee.mtiidla.freelane.repository.SwimmingPoolRepository
 import ee.mtiidla.freelane.service.TeamBadePoolService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.OffsetDateTime
-import java.time.ZoneId
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Component
@@ -17,18 +16,22 @@ class PoolPeopleCountTask(
     private val countRepository: SwimmingPoolPeopleCountRepository
 ) {
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = INTERVAL_MS)
     fun saveSwimmingPoolPeopleCount() {
         val pools = poolRepository.findAll()
         pools.forEach {
             val count = service.getPoolPeopleCount(it.vemcount_key, it.vemcount_stream_id)
             val peopleCount = SwimmingPoolPeopleCount(
-                pool_id = it.id,
+                poolId = it.id,
                 // TODO: marko 2019-02-09 figure out proper way to approach time zones
-                timestamp = OffsetDateTime.now(ZoneId.of("Europe/Copenhagen")).truncatedTo(ChronoUnit.SECONDS),
-                people_count = count
+                timestamp = Instant.now().truncatedTo(ChronoUnit.SECONDS),
+                peopleCount = count
             )
             countRepository.save(peopleCount)
         }
+    }
+
+    companion object {
+        const val INTERVAL_MS = 15 * 60 * 1000L
     }
 }

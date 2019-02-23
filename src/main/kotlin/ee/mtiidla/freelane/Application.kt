@@ -18,10 +18,9 @@ open class Application {
     }
 
     @Bean
-    open fun restClient() : RestTemplate {
+    open fun restClient(): RestTemplate {
         return RestTemplate()
     }
-
 }
 
 fun main(args: Array<String>) {

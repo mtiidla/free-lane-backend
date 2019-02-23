@@ -3,6 +3,7 @@
 .idea/*
 .gradle/*
 /build
+/out
 
 # Log file
 *.log
