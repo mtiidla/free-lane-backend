@@ -6,54 +6,41 @@ import ee.mtiidla.freelane.repository.SwimmingPoolRepository
 import ee.mtiidla.freelane.service.TeamBadePoolService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
-import java.util.Locale
-import java.time.temporal.WeekFields
-
 
 @Component
 class PoolPeopleGroupedCountTask(
     private val service: TeamBadePoolService,
     private val poolRepository: SwimmingPoolRepository,
-    private val swimmingPoolGroupedPeopleCountRepository: SwimmingPoolGroupedPeopleCountRepository
+    private val groupCountRepository: SwimmingPoolGroupedPeopleCountRepository
 ) {
 
     @Scheduled(fixedRate = INTERVAL_MS)
-    fun saveSwimmingGroupPoolPeopleCount() {
+    fun saveSwimmingPoolGroupedPeopleCount() {
+
+        val date = LocalDate.now(ZoneOffset.UTC)
+
         poolRepository.findAll().forEach {
-            val date = LocalDate.now()
-            val weekFields = WeekFields.of(Locale.getDefault())
 
             val poolId = it.id
-            val year = date.year
-            val weekNumber = date.get(weekFields.weekOfWeekBasedYear())
-            val weekDay = date.dayOfWeek.value
             val count = service.getPoolPeopleCount(it.vemcount_key, it.vemcount_stream_id)
 
-            val model = swimmingPoolGroupedPeopleCountRepository.findByPoolIdAndYearAndWeekAndWeekDay(
-                poolId = poolId,
-                year = year,
-                week = weekNumber,
-                weekDay = weekDay
-            ) ?: SwimmingPoolGroupedPeopleCount(
-                poolId = poolId,
-                year = year,
-                week = weekNumber,
-                weekDay = weekDay
-            )
+            val model = groupCountRepository.findByPoolIdAndDate(poolId, date)
+                ?: SwimmingPoolGroupedPeopleCount(poolId = poolId, date = date)
 
-            val timestampCount = "${Instant.now().truncatedTo(ChronoUnit.SECONDS)},$count;"
-            val updated = timestampCount+(model.timestampCount.takeIf { value -> value.isNotEmpty() } ?: "")
+            val timeCount =
+                "${LocalTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)},$count;"
+            val updated = timeCount + (model.timeCount.takeIf { value -> value.isNotEmpty() } ?: "")
 
-            val newModel = model.copy(timestampCount = updated)
-            swimmingPoolGroupedPeopleCountRepository.save(newModel)
+            val newModel = model.copy(timeCount = updated)
+            groupCountRepository.save(newModel)
         }
     }
 
     companion object {
         const val INTERVAL_MS = 2 * 60 * 1000L
     }
-
 }
