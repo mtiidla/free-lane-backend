@@ -10,4 +10,6 @@ interface SwimmingPoolGroupedPeopleCountRepository : JpaRepository<SwimmingPoolG
 
     fun findByPoolIdAndDate(poolId: Long, date: LocalDate) : SwimmingPoolGroupedPeopleCount?
 
+    fun findAllByPoolIdAndDateBetween(poolId: Long, start: LocalDate, end: LocalDate) : List<SwimmingPoolGroupedPeopleCount>
+
 }
