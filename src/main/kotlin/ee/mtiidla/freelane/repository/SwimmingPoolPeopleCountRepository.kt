@@ -1,17 +1,16 @@
 package ee.mtiidla.freelane.repository
 
-import ee.mtiidla.freelane.model.SwimmingPoolPeopleCount
+import ee.mtiidla.freelane.model.SwimmingPoolGroupedPeopleCount
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.time.Instant
+import java.time.LocalDate
 
 @Repository
-interface SwimmingPoolPeopleCountRepository : JpaRepository<SwimmingPoolPeopleCount, Long> {
+interface SwimmingPoolPeopleCountRepository : JpaRepository<SwimmingPoolGroupedPeopleCount, Long> {
 
-    fun findAllByPoolId(poolId: Long) : List<SwimmingPoolPeopleCount>
+    fun findByPoolIdAndDate(poolId: Long, date: LocalDate) : SwimmingPoolGroupedPeopleCount?
 
-    fun findFirst1ByPoolIdOrderByTimestampDesc(poolId: Long) : SwimmingPoolPeopleCount
+    fun findAllByPoolIdAndDateBetween(poolId: Long, start: LocalDate, end: LocalDate) : List<SwimmingPoolGroupedPeopleCount>
 
-    fun findAllByPoolIdAndTimestampBetween(poolId: Long, start: Instant, end: Instant) : List<SwimmingPoolPeopleCount>
-
+    fun findFirst1ByPoolIdOrderByDateDesc(poolId: Long): SwimmingPoolGroupedPeopleCount?
 }

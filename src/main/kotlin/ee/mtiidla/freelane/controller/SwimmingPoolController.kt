@@ -4,7 +4,6 @@ import ee.mtiidla.freelane.model.SwimmingPool
 import ee.mtiidla.freelane.model.SwimmingPoolGroupedPeopleCount
 import ee.mtiidla.freelane.model.SwimmingPoolOpeningHours
 import ee.mtiidla.freelane.model.SwimmingPoolPeopleCount
-import ee.mtiidla.freelane.repository.SwimmingPoolGroupedPeopleCountRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolOpeningHoursRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolPeopleCountRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolRepository
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneOffset
@@ -28,7 +28,6 @@ import java.time.ZoneOffset
 class SwimmingPoolController(
     private val repository: SwimmingPoolRepository,
     private val countRepository: SwimmingPoolPeopleCountRepository,
-    private val groupedCountRepository: SwimmingPoolGroupedPeopleCountRepository,
     private val openingHoursRepository: SwimmingPoolOpeningHoursRepository,
     private val poolService: TeamBadePoolService
 ) {
@@ -45,50 +44,25 @@ class SwimmingPoolController(
                             it.closed.toString()
                         )
                     }
-                val count = countRepository.findFirst1ByPoolIdOrderByTimestampDesc(pool.id)
+                val peopleCount = countRepository.findFirst1ByPoolIdOrderByDateDesc(pool.id)
+                val count = peopleCount?.let {
+                    // TODO: marko 2019-04-07 could optimize for latest count not parse full string
+                    val latestCount = ungroupCount(it).last()
+                    CountViewModel(latestCount.timestamp, latestCount.peopleCount)
+
+                } ?: CountViewModel(Instant.now(), 0)
                 SwimmingPoolViewModel(
                     pool.id,
                     pool.name,
                     pool.url,
-                    CountViewModel(count.timestamp, count.peopleCount),
+                    count,
                     hours
                 )
             }
     }
 
-    @GetMapping("/v0/pools/{id}/counts")
-    fun getSwimmingPoolCountsBetweenTimestamps(
-        @PathVariable("id") poolId: Long,
-        @RequestParam("start_date") start: String,
-        @RequestParam("end_date") end: String
-    ): List<CountViewModel> {
-        var startDate = LocalDate.parse(start)
-        val endDate = LocalDate.parse(end)
-
-        val openingHours = openingHoursRepository.findAllByPoolId(poolId)
-        val allCounts = mutableListOf<SwimmingPoolPeopleCount>()
-
-        while (!startDate.isAfter(endDate)) {
-            val dayOfWeek = startDate.dayOfWeek.value
-            val openingHour = checkNotNull(openingHours.firstOrNull { it.dayOfWeek == dayOfWeek })
-            // TODO: marko 2019-02-23 convert start date time to pool timezone?
-            val queryStart = startDate.atTime(openingHour.open).toInstant(ZoneOffset.UTC)
-            val queryEnd = startDate.atTime(openingHour.closed).toInstant(ZoneOffset.UTC)
-
-            val counts =
-                countRepository.findAllByPoolIdAndTimestampBetween(poolId, queryStart, queryEnd)
-            allCounts.addAll(counts)
-
-            startDate = startDate.plusDays(1)
-        }
-
-        return allCounts.map {
-            CountViewModel(it.timestamp, it.peopleCount)
-        }
-    }
-
     @GetMapping("/pools/{id}/counts")
-    fun getSwimmingPoolGroupedCountsBetweenTimestamps(
+    fun getSwimmingPoolCountsBetweenTimestamps(
         @PathVariable("id") poolId: Long,
         @RequestParam("start_date") start: String,
         @RequestParam("end_date") end: String
@@ -104,7 +78,7 @@ class SwimmingPoolController(
             val queryEnd = endDate
 
             val groupedCount =
-                groupedCountRepository.findAllByPoolIdAndDateBetween(poolId, queryStart, queryEnd)
+                countRepository.findAllByPoolIdAndDateBetween(poolId, queryStart, queryEnd)
 
             val dayOfWeek = startDate.dayOfWeek.value
             val openingHour = checkNotNull(openingHours.firstOrNull { it.dayOfWeek == dayOfWeek })
@@ -132,17 +106,8 @@ class SwimmingPoolController(
             .map {
                 val (timestamp, count) = it.split(",")
                 val dateTime = grouped.date.atTime(LocalTime.parse(timestamp)).atZone(ZoneOffset.UTC)
-                SwimmingPoolPeopleCount(0, grouped.poolId, dateTime.toInstant(), count.toInt())
+                SwimmingPoolPeopleCount(grouped.poolId, dateTime.toInstant(), count.toInt())
             }.toList()
-    }
-
-    @GetMapping("/pool/{key}/{id}")
-    fun getPoolPeopleCount(
-        @PathVariable("key") key: String,
-        @PathVariable("id") id: String
-    ): Int {
-        // TODO: marko 2019-02-03 remove from controller, move to scheduled task
-        return poolService.getPoolPeopleCount(key, id)
     }
 
     @PostMapping("/pools/{id}/opening_hours")

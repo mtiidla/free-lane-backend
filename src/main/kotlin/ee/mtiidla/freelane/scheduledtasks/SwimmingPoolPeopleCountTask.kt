@@ -1,7 +1,7 @@
 package ee.mtiidla.freelane.scheduledtasks
 
 import ee.mtiidla.freelane.model.SwimmingPoolGroupedPeopleCount
-import ee.mtiidla.freelane.repository.SwimmingPoolGroupedPeopleCountRepository
+import ee.mtiidla.freelane.repository.SwimmingPoolPeopleCountRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolRepository
 import ee.mtiidla.freelane.service.TeamBadePoolService
 import org.springframework.scheduling.annotation.Scheduled
@@ -12,14 +12,14 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 @Component
-class PoolPeopleGroupedCountTask(
+class SwimmingPoolPeopleCountTask(
     private val service: TeamBadePoolService,
     private val poolRepository: SwimmingPoolRepository,
-    private val groupCountRepository: SwimmingPoolGroupedPeopleCountRepository
+    private val countRepository: SwimmingPoolPeopleCountRepository
 ) {
 
     @Scheduled(fixedRate = INTERVAL_MS)
-    fun saveSwimmingPoolGroupedPeopleCount() {
+    fun saveSwimmingPoolPeopleCount() {
 
         val date = LocalDate.now(ZoneOffset.UTC)
 
@@ -28,7 +28,7 @@ class PoolPeopleGroupedCountTask(
             val poolId = it.id
             val count = service.getPoolPeopleCount(it.vemcount_key, it.vemcount_stream_id)
 
-            val model = groupCountRepository.findByPoolIdAndDate(poolId, date)
+            val model = countRepository.findByPoolIdAndDate(poolId, date)
                 ?: SwimmingPoolGroupedPeopleCount(poolId = poolId, date = date)
 
             val timeCount =
@@ -36,7 +36,7 @@ class PoolPeopleGroupedCountTask(
             val updated = timeCount + (model.timeCount.takeIf { value -> value.isNotEmpty() } ?: "")
 
             val newModel = model.copy(timeCount = updated)
-            groupCountRepository.save(newModel)
+            countRepository.save(newModel)
         }
     }
 
