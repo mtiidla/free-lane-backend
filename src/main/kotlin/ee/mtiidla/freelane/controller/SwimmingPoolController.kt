@@ -51,11 +51,14 @@ class SwimmingPoolController(
 
                 } ?: CountViewModel(Instant.now(), 0)
                 SwimmingPoolViewModel(
-                    pool.id,
-                    pool.name,
-                    pool.url,
-                    count,
-                    hours
+                    id = pool.id,
+                    name = pool.name,
+                    url = pool.url,
+                    address = pool.address,
+                    latitude = pool.latitude,
+                    longitude = pool.longitude,
+                    latest_count = count,
+                    opening_hours = hours
                 )
             }
     }
@@ -136,6 +139,9 @@ class SwimmingPoolController(
     fun createSwimmingPool(
         @RequestParam("name") name: String,
         @RequestParam("url") url: String,
+        @RequestParam("address") address: String,
+        @RequestParam("latitude") latitude: Float,
+        @RequestParam("longitude") longitude: Float,
         @RequestParam("vemcount_key") key: String,
         @RequestParam("vemcount_stream_id") streamId: String
     ): SwimmingPool {
@@ -143,6 +149,9 @@ class SwimmingPoolController(
             SwimmingPool(
                 name = name,
                 url = url,
+                address = address,
+                latitude = latitude,
+                longitude = longitude,
                 vemcount_key = key,
                 vemcount_stream_id = streamId
             )
@@ -154,6 +163,9 @@ class SwimmingPoolController(
         @PathVariable("id") id: Long,
         @RequestParam("name", required = false) name: String?,
         @RequestParam("url", required = false) url: String?,
+        @RequestParam("address", required = false) address: String?,
+        @RequestParam("latitude", required = false) latitude: Float?,
+        @RequestParam("longitude", required = false) longitude: Float?,
         @RequestParam("vemcount_key", required = false) key: String?,
         @RequestParam("vemcount_stream_id", required = false) streamId: String?
     ): SwimmingPool {
@@ -163,6 +175,9 @@ class SwimmingPoolController(
         val updatedPool = pool.copy(
             name = name ?: pool.name,
             url = url ?: pool.url,
+            address = address ?: pool.address,
+            latitude = latitude ?: pool.latitude,
+            longitude = longitude ?: pool.longitude,
             vemcount_key = key ?: pool.vemcount_key,
             vemcount_stream_id = streamId ?: pool.vemcount_stream_id
         )
