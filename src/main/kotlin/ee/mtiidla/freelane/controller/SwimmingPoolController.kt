@@ -12,6 +12,7 @@ import ee.mtiidla.freelane.viewmodel.OpeningHoursViewModel
 import ee.mtiidla.freelane.viewmodel.SwimmingPoolViewModel
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -103,7 +104,8 @@ class SwimmingPoolController(
             .filterNot { it.isBlank() }
             .map {
                 val (timestamp, count) = it.split(",")
-                val dateTime = grouped.date.atTime(LocalTime.parse(timestamp)).atZone(ZoneOffset.UTC)
+                val dateTime =
+                    grouped.date.atTime(LocalTime.parse(timestamp)).atZone(ZoneOffset.UTC)
                 SwimmingPoolPeopleCount(grouped.poolId, dateTime.toInstant(), count.toInt())
             }.toList()
     }
@@ -145,6 +147,26 @@ class SwimmingPoolController(
                 vemcount_stream_id = streamId
             )
         )
+    }
+
+    @PatchMapping("/pools/{id}")
+    fun updateSwimmingPool(
+        @PathVariable("id") id: Long,
+        @RequestParam("name", required = false) name: String?,
+        @RequestParam("url", required = false) url: String?,
+        @RequestParam("vemcount_key", required = false) key: String?,
+        @RequestParam("vemcount_stream_id", required = false) streamId: String?
+    ): SwimmingPool {
+        val pool = repository.findById(id).orElseThrow {
+            IllegalArgumentException("No pool with id: $id")
+        }
+        val updatedPool = pool.copy(
+            name = name ?: pool.name,
+            url = url ?: pool.url,
+            vemcount_key = key ?: pool.vemcount_key,
+            vemcount_stream_id = streamId ?: pool.vemcount_stream_id
+        )
+        return repository.save(updatedPool)
     }
 
     @DeleteMapping("/pools/{id}")
