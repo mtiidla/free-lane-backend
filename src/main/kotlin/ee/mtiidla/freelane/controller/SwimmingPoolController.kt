@@ -7,7 +7,6 @@ import ee.mtiidla.freelane.model.SwimmingPoolPeopleCount
 import ee.mtiidla.freelane.repository.SwimmingPoolOpeningHoursRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolPeopleCountRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolRepository
-import ee.mtiidla.freelane.service.TeamBadePoolService
 import ee.mtiidla.freelane.viewmodel.CountViewModel
 import ee.mtiidla.freelane.viewmodel.OpeningHoursViewModel
 import ee.mtiidla.freelane.viewmodel.SwimmingPoolViewModel
@@ -28,8 +27,7 @@ import java.time.ZoneOffset
 class SwimmingPoolController(
     private val repository: SwimmingPoolRepository,
     private val countRepository: SwimmingPoolPeopleCountRepository,
-    private val openingHoursRepository: SwimmingPoolOpeningHoursRepository,
-    private val poolService: TeamBadePoolService
+    private val openingHoursRepository: SwimmingPoolOpeningHoursRepository
 ) {
 
     @GetMapping("/pools")
@@ -47,7 +45,7 @@ class SwimmingPoolController(
                 val peopleCount = countRepository.findFirst1ByPoolIdOrderByDateDesc(pool.id)
                 val count = peopleCount?.let {
                     // TODO: marko 2019-04-07 could optimize for latest count not parse full string
-                    val latestCount = ungroupCount(it).last()
+                    val latestCount = ungroupCount(it).first()
                     CountViewModel(latestCount.timestamp, latestCount.peopleCount)
 
                 } ?: CountViewModel(Instant.now(), 0)
