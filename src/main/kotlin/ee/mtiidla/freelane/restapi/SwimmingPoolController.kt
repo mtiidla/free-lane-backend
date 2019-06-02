@@ -1,12 +1,12 @@
 package ee.mtiidla.freelane.restapi
 
+import ee.mtiidla.freelane.data.repository.SwimmingPoolOpeningHoursRepository
+import ee.mtiidla.freelane.data.repository.SwimmingPoolPeopleCountRepository
+import ee.mtiidla.freelane.data.repository.SwimmingPoolRepository
 import ee.mtiidla.freelane.data.repository.model.SwimmingPool
 import ee.mtiidla.freelane.data.repository.model.SwimmingPoolGroupedPeopleCount
 import ee.mtiidla.freelane.data.repository.model.SwimmingPoolOpeningHours
 import ee.mtiidla.freelane.data.repository.model.SwimmingPoolPeopleCount
-import ee.mtiidla.freelane.data.repository.SwimmingPoolOpeningHoursRepository
-import ee.mtiidla.freelane.data.repository.SwimmingPoolPeopleCountRepository
-import ee.mtiidla.freelane.data.repository.SwimmingPoolRepository
 import ee.mtiidla.freelane.domain.usecase.OpeningHoursService
 import ee.mtiidla.freelane.restapi.viewmodel.CountViewModel
 import ee.mtiidla.freelane.restapi.viewmodel.OpeningHoursViewModel

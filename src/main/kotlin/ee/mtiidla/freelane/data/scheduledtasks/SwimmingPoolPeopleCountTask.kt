@@ -1,9 +1,9 @@
 package ee.mtiidla.freelane.data.scheduledtasks
 
 import ee.mtiidla.freelane.data.external.TeamBadeApi
-import ee.mtiidla.freelane.data.repository.model.SwimmingPoolGroupedPeopleCount
 import ee.mtiidla.freelane.data.repository.SwimmingPoolPeopleCountRepository
 import ee.mtiidla.freelane.data.repository.SwimmingPoolRepository
+import ee.mtiidla.freelane.data.repository.model.SwimmingPoolGroupedPeopleCount
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDate

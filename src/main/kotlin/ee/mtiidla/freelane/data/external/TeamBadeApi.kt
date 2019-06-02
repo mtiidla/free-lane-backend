@@ -3,8 +3,8 @@ package ee.mtiidla.freelane.data.external
 import ee.mtiidla.freelane.data.external.mapper.OpeningHoursApiModelMapper
 import ee.mtiidla.freelane.data.external.model.OpeningHoursApiModel
 import ee.mtiidla.freelane.data.external.model.PeopleCountApiModel
-import ee.mtiidla.freelane.data.repository.model.SwimmingPoolOpeningHours
 import ee.mtiidla.freelane.data.repository.SwimmingPoolRepository
+import ee.mtiidla.freelane.data.repository.model.SwimmingPoolOpeningHours
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpMethod

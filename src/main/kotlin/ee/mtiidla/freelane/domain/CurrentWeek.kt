@@ -15,7 +15,9 @@ object CurrentWeek {
      * @param timeZone valid time zone String (e.g Europe/Copenhagen), see [ZoneId.of]
      * @throws [java.time.zone.ZoneRulesException] given invalid time zone
      */
-    fun currentWeekAtZone(timeZone: String, now: ZonedDateTime = ZonedDateTime.now()
+    fun currentWeekAtZone(
+        timeZone: String,
+        now: ZonedDateTime = ZonedDateTime.now()
     ): DateRange {
         val zonedNow = now.withZoneSameInstant(ZoneId.of(timeZone)).toLocalDate()
         val fieldISO = WeekFields.of(Locale.GERMANY).dayOfWeek()
