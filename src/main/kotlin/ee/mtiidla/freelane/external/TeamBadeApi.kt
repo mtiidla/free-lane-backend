@@ -1,0 +1,51 @@
+package ee.mtiidla.freelane.external
+
+import ee.mtiidla.freelane.external.mapper.OpeningHoursApiModelMapper
+import ee.mtiidla.freelane.external.model.OpeningHoursApiModel
+import ee.mtiidla.freelane.external.model.PeopleCountApiModel
+import ee.mtiidla.freelane.model.SwimmingPoolOpeningHours
+import ee.mtiidla.freelane.repository.SwimmingPoolRepository
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpMethod
+import org.springframework.stereotype.Component
+import org.springframework.web.client.RestTemplate
+import java.io.IOException
+import java.time.LocalDate
+
+@Component
+class TeamBadeApi(
+    private val poolRepository: SwimmingPoolRepository,
+    private val restClient: RestTemplate
+) : PoolInfoApi {
+
+    override fun getPoolPeopleCount(poolId: Long): Int {
+        val pool = checkNotNull(poolRepository.findByIdOrNull(poolId))
+        val response = restClient.exchange("https://l.vemcount.com/w/${pool.vemcount_key}/stream?" +
+            "data[]=${pool.vemcount_stream_id}",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<PeopleCountApiModel>>() {})
+
+        return response.body?.firstOrNull { it.value != null }?.value
+            ?: throw IOException("Failed to load people count for pool: $pool")
+    }
+
+    override fun getPoolOpeningHours(
+        poolId: Long,
+        fromDate: LocalDate,
+        toDate: LocalDate
+    ): List<SwimmingPoolOpeningHours> {
+        val pool = checkNotNull(poolRepository.findByIdOrNull(poolId))
+        val response = restClient.exchange(
+            "https://svoemkbh.kk.dk/opening_hours/instances?" +
+                "from_date=$fromDate&to_date=$toDate&nid=${pool.opening_hours_id}",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<OpeningHoursApiModel>>() {})
+
+        val openingHours: List<OpeningHoursApiModel> = response.body
+            ?: throw IOException("Failed to load opening hours for pool: $pool")
+        return openingHours.map(OpeningHoursApiModelMapper::map)
+    }
+}

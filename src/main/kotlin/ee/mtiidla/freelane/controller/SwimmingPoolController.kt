@@ -7,6 +7,7 @@ import ee.mtiidla.freelane.model.SwimmingPoolPeopleCount
 import ee.mtiidla.freelane.repository.SwimmingPoolOpeningHoursRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolPeopleCountRepository
 import ee.mtiidla.freelane.repository.SwimmingPoolRepository
+import ee.mtiidla.freelane.service.OpeningHoursService
 import ee.mtiidla.freelane.viewmodel.CountViewModel
 import ee.mtiidla.freelane.viewmodel.OpeningHoursViewModel
 import ee.mtiidla.freelane.viewmodel.SwimmingPoolViewModel
@@ -28,14 +29,15 @@ import java.time.ZoneOffset
 class SwimmingPoolController(
     private val repository: SwimmingPoolRepository,
     private val countRepository: SwimmingPoolPeopleCountRepository,
-    private val openingHoursRepository: SwimmingPoolOpeningHoursRepository
+    private val openingHoursRepository: SwimmingPoolOpeningHoursRepository,
+    private val openingHoursService: OpeningHoursService
 ) {
 
     @GetMapping("/pools")
     fun getAllSwimmingPools(): List<SwimmingPoolViewModel> {
         return repository.findAll()
             .map { pool ->
-                val hours = openingHoursRepository.findAllByPoolId(pool.id)
+                val hours = openingHoursService.getForCurrentWeek(pool.id)
                     .map {
                         OpeningHoursViewModel(
                             it.dayOfWeek,
@@ -143,7 +145,9 @@ class SwimmingPoolController(
         @RequestParam("latitude") latitude: Float,
         @RequestParam("longitude") longitude: Float,
         @RequestParam("vemcount_key") key: String,
-        @RequestParam("vemcount_stream_id") streamId: String
+        @RequestParam("vemcount_stream_id") streamId: String,
+        @RequestParam("opening_hours_id") openingHoursId: Long,
+        @RequestParam("time_zone") timeZone: String = "Europe/Copenhagen"
     ): SwimmingPool {
         return repository.save(
             SwimmingPool(
@@ -153,7 +157,9 @@ class SwimmingPoolController(
                 latitude = latitude,
                 longitude = longitude,
                 vemcount_key = key,
-                vemcount_stream_id = streamId
+                vemcount_stream_id = streamId,
+                opening_hours_id = openingHoursId,
+                time_zone = timeZone
             )
         )
     }
@@ -167,7 +173,9 @@ class SwimmingPoolController(
         @RequestParam("latitude", required = false) latitude: Float?,
         @RequestParam("longitude", required = false) longitude: Float?,
         @RequestParam("vemcount_key", required = false) key: String?,
-        @RequestParam("vemcount_stream_id", required = false) streamId: String?
+        @RequestParam("vemcount_stream_id", required = false) streamId: String?,
+        @RequestParam("opening_hours_id", required = false) openingHoursId: Long?,
+        @RequestParam("time_zone", required = false) timeZone: String?
     ): SwimmingPool {
         val pool = repository.findById(id).orElseThrow {
             IllegalArgumentException("No pool with id: $id")
@@ -179,7 +187,9 @@ class SwimmingPoolController(
             latitude = latitude ?: pool.latitude,
             longitude = longitude ?: pool.longitude,
             vemcount_key = key ?: pool.vemcount_key,
-            vemcount_stream_id = streamId ?: pool.vemcount_stream_id
+            vemcount_stream_id = streamId ?: pool.vemcount_stream_id,
+            opening_hours_id = openingHoursId ?: pool.opening_hours_id,
+            time_zone = timeZone ?: pool.time_zone
         )
         return repository.save(updatedPool)
     }

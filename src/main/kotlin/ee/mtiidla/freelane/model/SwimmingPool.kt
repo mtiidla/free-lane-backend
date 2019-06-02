@@ -15,5 +15,7 @@ data class SwimmingPool(
     val latitude: Float = 0F,
     val longitude: Float = 0F,
     val vemcount_key: String = "",
-    val vemcount_stream_id: String = ""
+    val vemcount_stream_id: String = "",
+    val opening_hours_id: Long = 0L,
+    val time_zone: String = ""
 )
