@@ -9,5 +9,4 @@ class SwimmingPoolService(
 ) {
 
     // TODO: marko 2019-06-02 extract each controller method into use case or combine in this service
-
 }

@@ -31,6 +31,8 @@ bootJar {
     version =  '0.1.0'
 }
 
+apply from: "ktlint.gradle"
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.springframework.boot:spring-boot-starter"

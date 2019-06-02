@@ -50,7 +50,6 @@ class SwimmingPoolController(
                     // TODO: marko 2019-04-07 could optimize for latest count not parse full string
                     val latestCount = ungroupCount(it).first()
                     CountViewModel(latestCount.timestamp, latestCount.peopleCount)
-
                 } ?: CountViewModel(Instant.now(), 0)
                 SwimmingPoolViewModel(
                     id = pool.id,

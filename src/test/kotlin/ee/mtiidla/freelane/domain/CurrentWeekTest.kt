@@ -1,6 +1,5 @@
 package ee.mtiidla.freelane.domain
 
-import ee.mtiidla.freelane.domain.CurrentWeek
 import ee.mtiidla.freelane.domain.entity.DateRange
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
