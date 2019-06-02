@@ -8,9 +8,13 @@ import java.time.LocalDate
 @Repository
 interface SwimmingPoolPeopleCountRepository : JpaRepository<SwimmingPoolGroupedPeopleCount, Long> {
 
-    fun findByPoolIdAndDate(poolId: Long, date: LocalDate) : SwimmingPoolGroupedPeopleCount?
+    fun findByPoolIdAndDate(poolId: Long, date: LocalDate): SwimmingPoolGroupedPeopleCount?
 
-    fun findAllByPoolIdAndDateBetween(poolId: Long, start: LocalDate, end: LocalDate) : List<SwimmingPoolGroupedPeopleCount>
+    fun findAllByPoolIdAndDateBetween(
+        poolId: Long,
+        start: LocalDate,
+        end: LocalDate
+    ): List<SwimmingPoolGroupedPeopleCount>
 
     fun findFirst1ByPoolIdOrderByDateDesc(poolId: Long): SwimmingPoolGroupedPeopleCount?
 }

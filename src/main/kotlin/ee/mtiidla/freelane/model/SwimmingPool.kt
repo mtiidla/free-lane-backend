@@ -6,7 +6,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-data class SwimmingPool (
+data class SwimmingPool(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",

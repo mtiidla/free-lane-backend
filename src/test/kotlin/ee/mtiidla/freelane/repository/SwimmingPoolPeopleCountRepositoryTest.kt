@@ -77,7 +77,6 @@ class SwimmingPoolPeopleCountRepositoryTest {
         val result = repository.findFirst1ByPoolIdOrderByDateDesc(poolId)
 
         assertEquals(count, result)
-
     }
 
     @Test
@@ -125,7 +124,6 @@ class SwimmingPoolPeopleCountRepositoryTest {
             timeCount = "12:30:45,10;"
         )
         entityManager.persist(after)
-
 
         val result = repository.findAllByPoolIdAndDateBetween(poolId, start, end)
 
