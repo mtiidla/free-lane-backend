@@ -20,6 +20,7 @@ class UpdateSwimmingPoolUseCase(
             existing.copy(
                 name = name ?: existing.name,
                 url = url ?: existing.url,
+                cover_image_url = cover_image_url ?: existing.cover_image_url,
                 address = address ?: existing.address,
                 latitude = latitude ?: existing.latitude,
                 longitude = longitude ?: existing.longitude,

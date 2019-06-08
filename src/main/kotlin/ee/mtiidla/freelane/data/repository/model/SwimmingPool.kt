@@ -11,6 +11,7 @@ data class SwimmingPool(
     val id: Long = 0,
     val name: String = "",
     val url: String = "",
+    val cover_image_url: String = "",
     val address: String = "",
     val latitude: Float = 0F,
     val longitude: Float = 0F,

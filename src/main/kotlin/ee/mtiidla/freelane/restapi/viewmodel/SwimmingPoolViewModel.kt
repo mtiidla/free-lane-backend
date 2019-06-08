@@ -4,6 +4,7 @@ data class SwimmingPoolViewModel(
     val id: Long,
     val name: String,
     val url: String,
+    val cover_image_url: String,
     val address: String,
     val latitude: Float,
     val longitude: Float,

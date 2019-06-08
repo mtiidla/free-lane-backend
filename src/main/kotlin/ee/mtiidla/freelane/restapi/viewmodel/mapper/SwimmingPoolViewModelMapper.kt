@@ -14,6 +14,7 @@ class SwimmingPoolViewModelMapper : ViewModelMapper<SwimmingPool, SwimmingPoolVi
             id = id,
             name = name,
             url = url,
+            cover_image_url = cover_image_url,
             address = address,
             latitude = latitude,
             longitude = longitude,

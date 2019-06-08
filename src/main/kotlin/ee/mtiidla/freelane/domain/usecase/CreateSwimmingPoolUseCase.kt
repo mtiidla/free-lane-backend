@@ -18,6 +18,7 @@ class CreateSwimmingPoolUseCase(
             SwimmingPool(
                 name = name,
                 url = url,
+                cover_image_url = cover_image_url,
                 address = address,
                 latitude = latitude,
                 longitude = longitude,
