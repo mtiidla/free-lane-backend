@@ -7,6 +7,7 @@ data class SwimmingPoolViewModel(
     val address: String,
     val latitude: Float,
     val longitude: Float,
-    val latest_count: CountViewModel,
-    val opening_hours: List<OpeningHoursViewModel>
+    val time_zone: String,
+    val latest_count: CountViewModel? = null,
+    val opening_hours: List<OpeningHoursViewModel>? = null
 )
