@@ -20,6 +20,6 @@ class OpeningHoursService(
         val pool = checkNotNull(poolRepository.findByIdOrNull(poolId))
         val currentWeek = CurrentWeek.currentWeekAtZone(pool.time_zone)
         return poolInfoApi.getPoolOpeningHours(poolId, currentWeek.start, currentWeek.end)
-            .sortedBy { it.dayOfWeek }
+            .sortedBy { it.date }
     }
 }

@@ -9,12 +9,16 @@ import org.springframework.stereotype.Component
 @Component
 class UpdateSwimmingPoolUseCase(
     private val repository: SwimmingPoolRepository,
-    private val viewModelMapper: SwimmingPoolViewModelMapper
+    private val viewModelMapper: SwimmingPoolViewModelMapper,
+    private val updatePeopleCountUseCase: UpdateSwimmingPoolPeopleCountUseCase,
+    private val updateOpeningHoursUseCase: UpdateSwimmingPoolOpeningHoursUseCase
 ) {
 
     fun execute(request: Request): SwimmingPoolViewModel {
-        val existing = repository.findById(request.poolId).orElseThrow {
-            IllegalArgumentException("No pool with id: ${request.poolId}")
+        val poolId = request.poolId
+
+        val existing = repository.findById(poolId).orElseThrow {
+            IllegalArgumentException("No pool with id: $poolId")
         }
         val updatedPool = with(request.updateSwimmingPoolDto) {
             existing.copy(
@@ -30,6 +34,17 @@ class UpdateSwimmingPoolUseCase(
                 time_zone = time_zone ?: existing.time_zone
             )
         }
+
+        if (updatedPool.vemcount_key != existing.vemcount_key ||
+            updatedPool.vemcount_stream_id != existing.vemcount_stream_id
+        ) {
+            updatePeopleCountUseCase.execute(UpdateSwimmingPoolPeopleCountUseCase.Request(poolId))
+        }
+
+        if (updatedPool.opening_hours_id != existing.opening_hours_id) {
+            updateOpeningHoursUseCase.execute(UpdateSwimmingPoolOpeningHoursUseCase.Request(poolId))
+        }
+
         return viewModelMapper.map(repository.save(updatedPool))
     }
 

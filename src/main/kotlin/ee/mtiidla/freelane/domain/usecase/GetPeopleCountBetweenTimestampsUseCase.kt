@@ -20,7 +20,9 @@ class GetPeopleCountBetweenTimestampsUseCase(
 
         var startDate = request.startDate
 
-        val openingHours = openingHoursRepository.findAllByPoolId(request.poolId)
+        val openingHours = openingHoursRepository.findAllByPoolIdAndDateBetweenOrderByDateAsc(
+            request.poolId, startDate, request.endDate
+        )
         val allCounts = mutableListOf<SwimmingPoolPeopleCount>()
 
         while (!startDate.isAfter(request.endDate)) {
@@ -30,14 +32,17 @@ class GetPeopleCountBetweenTimestampsUseCase(
             val groupedCount =
                 countRepository.findAllByPoolIdAndDateBetween(request.poolId, queryStart, queryEnd)
 
-            val dayOfWeek = startDate.dayOfWeek.value
-            val openingHour = checkNotNull(openingHours.firstOrNull { it.dayOfWeek == dayOfWeek })
+            // TODO: marko 2019-06-10 how to deal with counts for days we don't have opening hours for?
+            val openingHour = openingHours.firstOrNull { it.date == startDate }
             // TODO: marko 2019-02-23 convert start date time to pool timezone?
-            val filterStart = startDate.atTime(openingHour.open).toInstant(ZoneOffset.UTC)
-            val filterEnd = startDate.atTime(openingHour.closed).toInstant(ZoneOffset.UTC)
+            openingHour?.let { hour ->
 
-            allCounts.addAll(groupedCount.flatMap(peopleCountUnGrouper::ungroup)
-                .filter { filterEnd.isAfter(it.timestamp) && filterStart.isBefore(it.timestamp) })
+                val filterStart = startDate.atTime(hour.open).toInstant(ZoneOffset.UTC)
+                val filterEnd = startDate.atTime(hour.closed).toInstant(ZoneOffset.UTC)
+
+                allCounts.addAll(groupedCount.flatMap(peopleCountUnGrouper::ungroup)
+                    .filter { filterEnd.isAfter(it.timestamp) && filterStart.isBefore(it.timestamp) })
+            }
 
             startDate = startDate.plusDays(1)
         }
@@ -48,5 +53,4 @@ class GetPeopleCountBetweenTimestampsUseCase(
     }
 
     data class Request(val poolId: Long, val startDate: LocalDate, val endDate: LocalDate)
-
 }

@@ -46,6 +46,8 @@ class TeamBadeApi(
 
         val openingHours: List<OpeningHoursApiModel> = response.body
             ?: throw IOException("Failed to load opening hours for pool: $pool")
-        return openingHours.map(OpeningHoursApiModelMapper::map)
+        return openingHours.map {
+            OpeningHoursApiModelMapper.map(it, poolId)
+        }
     }
 }

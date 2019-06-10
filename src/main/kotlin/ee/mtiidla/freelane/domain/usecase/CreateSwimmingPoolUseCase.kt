@@ -10,11 +10,13 @@ import org.springframework.stereotype.Component
 @Component
 class CreateSwimmingPoolUseCase(
     private val repository: SwimmingPoolRepository,
+    private val updatePeopleCountUseCase: UpdateSwimmingPoolPeopleCountUseCase,
+    private val updateOpeningHoursUseCase: UpdateSwimmingPoolOpeningHoursUseCase,
     private val viewModelMapper: SwimmingPoolViewModelMapper
 ) {
 
     fun execute(request: Request) : SwimmingPoolViewModel {
-        val swimmingPool = with(request.createSwimmingPoolDto) {
+        val poolToCreate = with(request.createSwimmingPoolDto) {
             SwimmingPool(
                 name = name,
                 url = url,
@@ -28,7 +30,11 @@ class CreateSwimmingPoolUseCase(
                 time_zone = time_zone
             )
         }
-        return viewModelMapper.map(repository.save(swimmingPool))
+        val pool = repository.save(poolToCreate)
+        updateOpeningHoursUseCase.execute(UpdateSwimmingPoolOpeningHoursUseCase.Request(pool.id))
+        updatePeopleCountUseCase.execute(UpdateSwimmingPoolPeopleCountUseCase.Request(pool.id))
+
+        return viewModelMapper.map(pool)
     }
 
     data class Request(val createSwimmingPoolDto: CreateSwimmingPoolDto)

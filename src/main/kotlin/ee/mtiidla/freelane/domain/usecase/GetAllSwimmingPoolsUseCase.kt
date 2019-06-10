@@ -20,9 +20,10 @@ class GetAllSwimmingPoolsUseCase(
                 val hours = openingHoursService.getForCurrentWeek(pool.id)
                     .map {
                         OpeningHoursViewModel(
-                            it.dayOfWeek,
+                            it.date.toString(),
                             it.open.toString(),
-                            it.closed.toString()
+                            it.closed.toString(),
+                            it.extra
                         )
                     }
                 val count = getLatestPeopleCountUseCase.execute(
