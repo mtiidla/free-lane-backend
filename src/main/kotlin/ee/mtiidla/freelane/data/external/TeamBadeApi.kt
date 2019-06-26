@@ -21,14 +21,16 @@ class TeamBadeApi(
 
     override fun getPoolPeopleCount(poolId: Long): Int {
         val pool = checkNotNull(poolRepository.findByIdOrNull(poolId))
-        val response = restClient.exchange("https://l.vemcount.com/w/${pool.vemcount_key}/stream?" +
-            "data[]=${pool.vemcount_stream_id}",
+        val response = restClient.exchange(
+            "https://l.vemcount.com/embed/data/${pool.vemcount_key}",
             HttpMethod.GET,
             null,
-            object : ParameterizedTypeReference<List<PeopleCountApiModel>>() {})
+            PeopleCountApiModel::class.java
+        )
 
-        return response.body?.firstOrNull { it.value != null }?.value
-            ?: throw IOException("Failed to load people count for pool: $pool")
+        return response.body?.let {
+            it.value ?: 0
+        } ?: throw IOException("Failed to load people count for pool: $pool")
     }
 
     override fun getPoolOpeningHours(

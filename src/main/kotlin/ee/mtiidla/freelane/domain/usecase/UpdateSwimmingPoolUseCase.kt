@@ -35,6 +35,8 @@ class UpdateSwimmingPoolUseCase(
             )
         }
 
+        val pool = repository.save(updatedPool)
+
         if (updatedPool.vemcount_key != existing.vemcount_key ||
             updatedPool.vemcount_stream_id != existing.vemcount_stream_id
         ) {
@@ -44,8 +46,7 @@ class UpdateSwimmingPoolUseCase(
         if (updatedPool.opening_hours_id != existing.opening_hours_id) {
             updateOpeningHoursUseCase.execute(UpdateSwimmingPoolOpeningHoursUseCase.Request(poolId))
         }
-
-        return viewModelMapper.map(repository.save(updatedPool))
+        return viewModelMapper.map(pool)
     }
 
     data class Request(val poolId: Long, val updateSwimmingPoolDto: UpdateSwimmingPoolDto)
