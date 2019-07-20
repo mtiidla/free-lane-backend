@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SwimmingPoolRepository : JpaRepository<SwimmingPool, Long> {
 
-    fun findByOrderByNameDesc() : List<SwimmingPool>
+    fun findByOrderByNameAsc() : List<SwimmingPool>
 }
