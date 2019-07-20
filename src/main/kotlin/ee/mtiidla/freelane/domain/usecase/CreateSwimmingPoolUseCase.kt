@@ -18,16 +18,15 @@ class CreateSwimmingPoolUseCase(
     fun execute(request: Request) : SwimmingPoolViewModel {
         val poolToCreate = with(request.createSwimmingPoolDto) {
             SwimmingPool(
-                name = name,
-                url = url,
-                cover_image_url = cover_image_url,
-                address = address,
+                name = name.trim(),
+                url = url.trim(),
+                cover_image_url = cover_image_url.trim(),
+                address = address.trim(),
                 latitude = latitude,
                 longitude = longitude,
-                vemcount_key = vemcount_key,
-                vemcount_stream_id = vemcount_stream_id,
+                vemcount_key = vemcount_key.trim(),
                 opening_hours_id = opening_hours_id,
-                time_zone = time_zone
+                time_zone = time_zone.trim()
             )
         }
         val pool = repository.save(poolToCreate)

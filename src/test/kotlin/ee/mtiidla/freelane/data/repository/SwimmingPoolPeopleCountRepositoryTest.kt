@@ -27,8 +27,7 @@ class SwimmingPoolPeopleCountRepositoryTest {
 
         val pool = SwimmingPool(
             name = "Test Pool",
-            vemcount_key = "Key",
-            vemcount_stream_id = "1234"
+            vemcount_key = "Key"
         )
 
         val poolId = entityManager.persistAndGetId(pool) as Long
@@ -52,8 +51,7 @@ class SwimmingPoolPeopleCountRepositoryTest {
 
         val pool = SwimmingPool(
             name = "Test Pool",
-            vemcount_key = "Key",
-            vemcount_stream_id = "1234"
+            vemcount_key = "Key"
         )
 
         val poolId = entityManager.persistAndGetId(pool) as Long
@@ -87,8 +85,7 @@ class SwimmingPoolPeopleCountRepositoryTest {
 
         val pool = SwimmingPool(
             name = "Test Pool",
-            vemcount_key = "Key",
-            vemcount_stream_id = "1234"
+            vemcount_key = "Key"
         )
 
         val poolId = entityManager.persistAndGetId(pool) as Long

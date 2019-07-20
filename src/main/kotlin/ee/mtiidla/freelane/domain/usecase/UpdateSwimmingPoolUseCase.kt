@@ -22,24 +22,21 @@ class UpdateSwimmingPoolUseCase(
         }
         val updatedPool = with(request.updateSwimmingPoolDto) {
             existing.copy(
-                name = name ?: existing.name,
-                url = url ?: existing.url,
-                cover_image_url = cover_image_url ?: existing.cover_image_url,
-                address = address ?: existing.address,
+                name = name?.trim() ?: existing.name,
+                url = url?.trim() ?: existing.url,
+                cover_image_url = cover_image_url?.trim() ?: existing.cover_image_url,
+                address = address?.trim() ?: existing.address,
                 latitude = latitude ?: existing.latitude,
                 longitude = longitude ?: existing.longitude,
-                vemcount_key = vemcount_key ?: existing.vemcount_key,
-                vemcount_stream_id = vemcount_stream_id ?: existing.vemcount_stream_id,
+                vemcount_key = vemcount_key?.trim() ?: existing.vemcount_key,
                 opening_hours_id = opening_hours_id ?: existing.opening_hours_id,
-                time_zone = time_zone ?: existing.time_zone
+                time_zone = time_zone?.trim() ?: existing.time_zone
             )
         }
 
         val pool = repository.save(updatedPool)
 
-        if (updatedPool.vemcount_key != existing.vemcount_key ||
-            updatedPool.vemcount_stream_id != existing.vemcount_stream_id
-        ) {
+        if (updatedPool.vemcount_key != existing.vemcount_key) {
             updatePeopleCountUseCase.execute(UpdateSwimmingPoolPeopleCountUseCase.Request(poolId))
         }
 
