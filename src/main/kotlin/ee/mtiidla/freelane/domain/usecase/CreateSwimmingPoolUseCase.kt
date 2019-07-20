@@ -26,7 +26,8 @@ class CreateSwimmingPoolUseCase(
                 longitude = longitude,
                 vemcount_key = vemcount_key.trim(),
                 opening_hours_id = opening_hours_id,
-                time_zone = time_zone.trim()
+                time_zone = time_zone.trim(),
+                phone = phone.trim()
             )
         }
         val pool = repository.save(poolToCreate)

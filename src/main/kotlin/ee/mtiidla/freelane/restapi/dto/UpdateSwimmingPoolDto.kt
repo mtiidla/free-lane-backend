@@ -10,7 +10,7 @@ data class UpdateSwimmingPoolDto(
     val latitude: Float?,
     val longitude: Float?,
     val vemcount_key: String?,
-    val vemcount_stream_id: String?,
     val opening_hours_id: Long?,
+    val phone: String?,
     @ValidTimeZone val time_zone: String?
 )

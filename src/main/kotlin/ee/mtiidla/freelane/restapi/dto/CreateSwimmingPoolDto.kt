@@ -11,5 +11,6 @@ data class CreateSwimmingPoolDto(
     val longitude: Float,
     val vemcount_key: String,
     val opening_hours_id: Long,
-    @ValidTimeZone val time_zone: String
+    @ValidTimeZone val time_zone: String,
+    val phone: String
 )

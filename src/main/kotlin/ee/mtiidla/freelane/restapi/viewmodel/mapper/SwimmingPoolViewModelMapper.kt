@@ -18,7 +18,8 @@ class SwimmingPoolViewModelMapper : ViewModelMapper<SwimmingPool, SwimmingPoolVi
             address = address,
             latitude = latitude,
             longitude = longitude,
-            time_zone = time_zone
+            time_zone = time_zone,
+            phone = phone
         )
     }
 

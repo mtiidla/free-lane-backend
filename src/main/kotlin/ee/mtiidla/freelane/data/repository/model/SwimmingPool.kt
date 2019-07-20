@@ -17,5 +17,6 @@ data class SwimmingPool(
     val longitude: Float = 0F,
     val vemcount_key: String = "",
     val opening_hours_id: Long = 0L,
-    val time_zone: String = ""
+    val time_zone: String = "",
+    val phone: String = ""
 )

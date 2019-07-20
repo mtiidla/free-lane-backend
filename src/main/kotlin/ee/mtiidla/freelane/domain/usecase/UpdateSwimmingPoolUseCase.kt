@@ -30,7 +30,8 @@ class UpdateSwimmingPoolUseCase(
                 longitude = longitude ?: existing.longitude,
                 vemcount_key = vemcount_key?.trim() ?: existing.vemcount_key,
                 opening_hours_id = opening_hours_id ?: existing.opening_hours_id,
-                time_zone = time_zone?.trim() ?: existing.time_zone
+                time_zone = time_zone?.trim() ?: existing.time_zone,
+                phone = phone?.trim() ?: existing.phone
             )
         }
 
