@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SwimmingPoolRepository : JpaRepository<SwimmingPool, Long>
+interface SwimmingPoolRepository : JpaRepository<SwimmingPool, Long> {
+
+    fun findByOrderByNameDesc() : List<SwimmingPool>
+}

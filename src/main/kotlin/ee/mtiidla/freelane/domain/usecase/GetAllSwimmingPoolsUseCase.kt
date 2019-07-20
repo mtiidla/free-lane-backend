@@ -15,7 +15,7 @@ class GetAllSwimmingPoolsUseCase(
 ) {
 
     fun execute(): List<SwimmingPoolViewModel> {
-        return repository.findAll()
+        return repository.findByOrderByNameDesc()
             .map { pool ->
                 val hours = openingHoursService.getForCurrentWeek(pool.id)
                     .map {
