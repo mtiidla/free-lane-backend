@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class GetAllSwimmingPoolsUseCase(
     private val repository: SwimmingPoolRepository,
-    private val openingHoursService: OpeningHoursService,
+    private val getOpeningHoursUseCase: GetRunning7DaysOpeningHoursUseCase,
     private val getLatestPeopleCountUseCase: GetLatestPeopleCountUseCase,
     private val viewModelMapper: SwimmingPoolViewModelMapper
 ) {
@@ -17,15 +17,16 @@ class GetAllSwimmingPoolsUseCase(
     fun execute(): List<SwimmingPoolViewModel> {
         return repository.findByOrderByNameAsc()
             .map { pool ->
-                val hours = openingHoursService.getForCurrentWeek(pool.id)
-                    .map {
-                        OpeningHoursViewModel(
-                            it.date.toString(),
-                            it.open.toString(),
-                            it.closed.toString(),
-                            it.extra
-                        )
-                    }
+                val hours = getOpeningHoursUseCase.execute(
+                    GetRunning7DaysOpeningHoursUseCase.Request(pool.id)
+                ).map {
+                    OpeningHoursViewModel(
+                        date = it.date.toString(),
+                        open = it.open.toString(),
+                        closed = it.closed.toString(),
+                        extra = it.extra
+                    )
+                }
                 val count = getLatestPeopleCountUseCase.execute(
                     GetLatestPeopleCountUseCase.Request(pool.id)
                 )
