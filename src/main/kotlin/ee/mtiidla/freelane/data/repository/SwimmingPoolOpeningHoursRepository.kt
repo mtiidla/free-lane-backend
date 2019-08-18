@@ -10,8 +10,7 @@ import javax.transaction.Transactional
 @Transactional
 interface SwimmingPoolOpeningHoursRepository : JpaRepository<SwimmingPoolOpeningHours, Long> {
 
-    // TODO: marko 2019-02-23 should maybe order by dayOfWeek 
-    fun findAllByPoolIdAndDateBetweenOrderByDateAsc(
+    fun findAllByPoolIdAndDateBetweenOrderByDateAscIdAsc(
         poolId: Long,
         start: LocalDate,
         end: LocalDate

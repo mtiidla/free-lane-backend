@@ -20,7 +20,9 @@ class GetPeopleCountBetweenTimestampsUseCase(
 
         var startDate = request.startDate
 
-        val openingHours = openingHoursRepository.findAllByPoolIdAndDateBetweenOrderByDateAsc(
+        // TODO: marko 2019-08-18 Multiple opening hours are returned for each day in case of
+        //  saunagus etc, should filter out only pool opening hours?
+        val openingHours = openingHoursRepository.findAllByPoolIdAndDateBetweenOrderByDateAscIdAsc(
             request.poolId, startDate, request.endDate
         )
         val allCounts = mutableListOf<SwimmingPoolPeopleCount>()

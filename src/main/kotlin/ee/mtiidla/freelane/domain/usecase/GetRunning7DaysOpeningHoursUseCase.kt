@@ -16,7 +16,7 @@ class GetRunning7DaysOpeningHoursUseCase(
         val poolId = request.poolId
         val pool = checkNotNull(poolRepository.findByIdOrNull(poolId))
         val dateRange = DateRangeFactory.running7DaysAtZone(pool.time_zone)
-        return hoursRepository.findAllByPoolIdAndDateBetweenOrderByDateAsc(
+        return hoursRepository.findAllByPoolIdAndDateBetweenOrderByDateAscIdAsc(
             poolId = request.poolId,
             start = dateRange.start, end = dateRange.end
         ).sortedBy { it.date }
