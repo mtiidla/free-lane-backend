@@ -9,6 +9,7 @@ object OpeningHoursCategory {
 
     private val categories = mapOf(
         "7447" to "Bassiner",
+        "14436" to "Grøn tid",
         "14371" to "for offentlige svømmere",
         "14419" to "Kun friluftsbadet",
         "7379" to "Legetid",
